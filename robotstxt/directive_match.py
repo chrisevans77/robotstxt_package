@@ -1,8 +1,3 @@
-#todo: Validate if Google supports encoding in both directions? Or just encoding in paths but not patterns. (Testing tool only supports encoded paths, not patterns)
-#todo: test encoding in GSC, in both directions
-#todo: *, space and $ in URLs
-#todo: Check upper and lower case endocings
-
 import urllib.parse
 
 # Break a pattern into elements and clean up
@@ -26,10 +21,6 @@ def pattern_to_elements(pattern, debug=False):
 
     # Split the pattern into chunks
     pattern_elements = pattern.split('*')
-
-    # Remove any empty chunks (ensures paths with leading * are not matched)
-    while ("" in pattern_elements):
-        pattern_elements.remove("")
 
     if debug: print(f'Pattern elements: {pattern_elements}')
 
@@ -56,8 +47,8 @@ def pattern_match(pattern, path, debug=False):
                 end_match = True
                 pattern_element = pattern_element[:-1]
 
-        # First match must be found at the start of the path.
-        if x==0:
+        # First match not using a wildcard must be found at the start of the path.
+        if x==0 and pattern_element[:1] != '*':
             if debug: print('searching for first element')
             if not path.startswith(pattern_element):
                 return False
@@ -68,7 +59,7 @@ def pattern_match(pattern, path, debug=False):
                     if len(path) > position:
                         return False
 
-        # Subsequent matches can be anywhere from the current position
+        # Otherwise matches can be anywhere from the current position
         else:
             if debug: print('---------------------------')
             if debug: print(f'Searching for {pattern_element} from position {position}')
@@ -91,4 +82,3 @@ def pattern_match(pattern, path, debug=False):
     if debug: print('#####################################################')
     return True
 
-# print(pattern_match(pattern='/blog/*/page/*', path='/blog/en/page/4', debug=True))

@@ -1,4 +1,4 @@
 # Robots Text Processor
 
-This is a package to handle processing of robots.txt files.
+This is a Python package to check URL paths against robots directives a robots.txt file.
 

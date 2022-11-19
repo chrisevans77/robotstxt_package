@@ -63,9 +63,8 @@ def test_wildcard_middle_of_string_stringmatch():
     assert pattern_match('/*.php', '/Fish.PH') == False
 
 
-def test_missing_leading_slash_match():
+def test_missing_leading_slash_or_wildcard_match():
     assert pattern_match('fish', '/fish') == False
-    assert pattern_match('*fish', '/fish') == False
 
 
 def test_end_of_string():
@@ -91,6 +90,7 @@ def test_leading_wildcard_match():
     assert pattern_match('/*.php', '/filename.php/') == True
     assert pattern_match('/*.php', '/') == False
     assert pattern_match('/*.php', '/windows.PHP') == False
+    assert pattern_match('*.php', '/index.php') == True
 
 
 def test_generous_wildcard_match():
@@ -108,12 +108,18 @@ def test_space_in_patterns():
 
 
 def test_encoded_patterns():
-    assert pattern_match('/%20b', '/ b') == True
+    assert pattern_match('/%20a', '/ a') == True
     assert pattern_match('/ b', '/%20b') == True
-    assert pattern_match('/?b', '/%3Fb') == True
-    assert pattern_match('/%3Fb', '/?b') == True
-    assert pattern_match('/?b', '/%3fb') == True
-    assert pattern_match('/%3fb', '/?b') == True
+    assert pattern_match('/?c', '/%3Fc') == True
+    assert pattern_match('/%3Fd', '/?d') == True
+    assert pattern_match('/?e', '/%3fe') == True
+    assert pattern_match('/%3ff', '/?f') == True
+    assert pattern_match('/%3Ff', '/?f') == True
+    assert pattern_match('/%253Fg', '/?g') == False
+    assert pattern_match('/%25253Fh', '/?h') == False
+    assert pattern_match('/?i', '/%253Fi') == False
+    assert pattern_match('/?j', '/%25253Fj') == False
+
 
 def test_trailing_wildcard_and_endofline():
     assert pattern_match('/blog/*/page/*$', '/blog/en/page/4') == True

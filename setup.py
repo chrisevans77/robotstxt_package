@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="robotstxt",
-    version="1.0.1",
+    version="1.0.3",
     author="Christopher Evans",
     author_email="chris@chris24.co.uk",
-    description="A Python package to check URLs against a robots.txt file.",
+    description="A Python package to check URL paths against robots directives a robots.txt file.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/pypa/sampleproject",
+    url="https://github.com/chrisevans77/robotstxt_package",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

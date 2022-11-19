@@ -16,7 +16,7 @@ Allow: /longer_allow_beats_disallow*
 Disallow: /longer_allow_beats_disallow
 Disallow: /inline_comment # inline comment
 Disallow: missing_leading_slash
-Disallow: /*leading_wildcard
+Disallow: *leading_wildcard
 Disallow: /multiple*wildcards*test
 Disallow: /trailing_space_in_directive 
 Disallow: /*unencoded|
@@ -52,34 +52,21 @@ Sitemap:    https://www.domain.com/rule_leading_whitespace.xml
 
 '''
 
+def test_robotstxt_size():
+    robots = RobotsFile(test_robots)
+
+    # assert robots.byte_size == 652 #todo uncomment this when tests finalized
+    robots_size_exceeded = RobotsFile('x' * 900000)
+    assert robots.size_exceeded == False
+    assert robots_size_exceeded.size_exceeded == True
+
 
 def test_RobotsFile():
     robots = RobotsFile(test_robots)
-    robots_size_exceeded = RobotsFile('x' * 900000)
-
-    #assert robots.byte_size == 652 #todo uncomment this when tests finalized
-    assert robots.size_exceeded == False
-    assert robots_size_exceeded.size_exceeded == True
 
     assert robots.test_url('http://test.chris24.co.uk/ b', 'googlebot')['disallowed'] == True
     assert robots.test_url('http://test.chris24.co.uk/', 'googlebot')['disallowed'] == False
     assert robots.test_url('http://test.chris24.co.uk/trailing_space_in_directive', 'googlebot')['disallowed'] == True
-
-
-
-    assert robots.sitemaps[0].url == 'https://www.domain.com/sitemap.xml'
-    assert robots.sitemaps[1].url == 'https://www.domain.com/lower_case.xml'
-    assert robots.sitemaps[2].url == 'https://www.domain.com/upper_case.xml'
-    assert robots.sitemaps[3].url == 'www.domain.com/missing_protocol.xml'
-    assert robots.sitemaps[4].url == 'missing_domain.xml'
-    assert robots.sitemaps[5].url == 'https://www.domain.com/has_comment.xml'
-    assert robots.sitemaps[6].url == 'https://www.domain.com/leading_whitespace.xml'
-    assert robots.sitemaps[7].url == 'https://www.domain.com/trailing_whitespace.xml'
-    assert robots.sitemaps[8].url == 'https://www.domain.com/rule_leading_whitespace.xml'
-
-    assert robots.sitemaps[0].valid_url == True
-    assert robots.sitemaps[3].valid_url == False
-    assert robots.sitemaps[4].valid_url == False
 
     assert robots.test_url('http://test.chris24.co.uk/case_insensitive_token', 'GOOGLEBOT')['disallowed'] == True
     assert robots.test_url('http://test.chris24.co.uk/split_block_test', 'googlebot')['disallowed'] == True
@@ -106,11 +93,26 @@ def test_RobotsFile():
     assert robots.test_url('http://test.chris24.co.uk/.ssomething', 'googlebot')['disallowed'] == False
 
 
-
 def test_Sitemap():
     sitemap_result = Sitemap('https://www.example.com/sitemap.xml')
     assert sitemap_result.valid_url == True
     assert sitemap_result.url == 'https://www.example.com/sitemap.xml'
-
     sitemap_result = Sitemap('ttps://www.example.com/sitemap.xml')
     assert sitemap_result.valid_url == False
+
+
+def test_Sitemap_in_robotstxt():
+    robots = RobotsFile(test_robots)
+    assert robots.sitemaps[0].url == 'https://www.domain.com/sitemap.xml'
+    assert robots.sitemaps[1].url == 'https://www.domain.com/lower_case.xml'
+    assert robots.sitemaps[2].url == 'https://www.domain.com/upper_case.xml'
+    assert robots.sitemaps[3].url == 'www.domain.com/missing_protocol.xml'
+    assert robots.sitemaps[4].url == 'missing_domain.xml'
+    assert robots.sitemaps[5].url == 'https://www.domain.com/has_comment.xml'
+    assert robots.sitemaps[6].url == 'https://www.domain.com/leading_whitespace.xml'
+    assert robots.sitemaps[7].url == 'https://www.domain.com/trailing_whitespace.xml'
+    assert robots.sitemaps[8].url == 'https://www.domain.com/rule_leading_whitespace.xml'
+
+    assert robots.sitemaps[0].valid_url == True
+    assert robots.sitemaps[3].valid_url == False
+    assert robots.sitemaps[4].valid_url == False

@@ -25,6 +25,7 @@ Disallow: /positive_fallback_test
 Disallow: /default_trailing_wildcard
 Disallow: /..something # dot character handling
 Disallow: / b
+Disallow: *radius=
 
 Disallow: /block_break
 
@@ -91,6 +92,7 @@ def test_RobotsFile():
     assert robots.test_url('http://test.chris24.co.uk/blank_disallow', 'blank')['disallowed'] == False
     assert robots.test_url('http://test.chris24.co.uk/..something', 'googlebot')['disallowed'] == True
     assert robots.test_url('http://test.chris24.co.uk/.ssomething', 'googlebot')['disallowed'] == False
+    assert robots.test_url('http://test.chris24.co.uk/for-sale/property/barking/?radius=2.0', 'googlebot')['disallowed'] == True
 
 
 def test_Sitemap():
